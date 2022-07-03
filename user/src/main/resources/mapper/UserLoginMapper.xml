@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhqn.user.mapper.UserLoginMapper">
+
+    <resultMap id="BaseResultMap" type="com.zhqn.user.domain.entity.UserLogin">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+            <result property="loginId" column="login_id" jdbcType="VARCHAR"/>
+            <result property="loginTime" column="login_time" jdbcType="TIMESTAMP"/>
+            <result property="loginExpireTime" column="login_expire_time" jdbcType="TIMESTAMP"/>
+            <result property="terminateName" column="terminate_name" jdbcType="VARCHAR"/>
+            <result property="userHost" column="user_host" jdbcType="VARCHAR"/>
+            <result property="forceLogout" column="force_logout" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,login_id,
+        login_time,login_expire_time,terminate_name,
+        user_host,force_logout
+    </sql>
+</mapper>

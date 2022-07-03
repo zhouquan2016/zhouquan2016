@@ -3,8 +3,8 @@ import './App.css';
 
 function App({openSock, closeSock}) {
   return (
-    <div className="App">
-      <header className="App-header">
+    <div >
+      <header>
         <button onClick={openSock}>open websocket</button>
         <button onClick={closeSock}>close websocket</button>
       </header>

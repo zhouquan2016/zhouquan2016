@@ -13,6 +13,8 @@ public class UserVO {
 
     private Long id;
 
-    private String userName;
+    private String loginNo;
+
+    private String nickName;
 
 }

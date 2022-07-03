@@ -1,12 +1,16 @@
 package com.zhqn.ws.handler;
 
-import com.zhqn.api.user.UserApi;
+import com.alibaba.fastjson.JSON;
 import com.zhqn.api.user.UserVO;
+import com.zhqn.ws.domain.constraints.BaseConstraints;
+import com.zhqn.ws.domain.dto.WebsocketResponseDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -21,13 +25,20 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class UserSessionHandler implements WebSocketHandler {
 
+    @Value("${spring.application.name}")
+    String serviceName;
+
     Map<Long, WebSocketSession> userMap = new ConcurrentHashMap<>();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        UserVO userVO = (UserVO) session.getAttributes().get(UserApi.USER_ID_NAME);
+        UserVO userVO = (UserVO) session.getAttributes().get(BaseConstraints.WEBSOCKET_ATTR_USER);
         userMap.put(userVO.getId(), session);
-        session.sendMessage(new TextMessage("欢迎你"));
+        WebsocketResponseDTO<String> dto = new WebsocketResponseDTO<>();
+        dto.setServiceName(serviceName);
+        dto.setEventName("loginSuccess");
+        dto.setData("欢迎你");
+        session.sendMessage(new TextMessage(JSON.toJSONString(dto).replaceAll("\"", "\\\"")));
     }
 
     @Override
@@ -42,7 +53,11 @@ public class UserSessionHandler implements WebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        userMap.remove(session.getAttributes().get(UserApi.USER_ID_NAME));
+        UserVO userVO = (UserVO) session.getAttributes().get(BaseConstraints.WEBSOCKET_ATTR_USER);
+        if (Objects.nonNull(userVO)) {
+            userMap.remove(userVO.getId());
+            log.info("用户{},下线成功", userVO.getId());
+        }
     }
 
     @Override

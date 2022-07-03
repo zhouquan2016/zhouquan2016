@@ -1,5 +1,6 @@
 package com.zhqn.api.user;
 
+import com.zhqn.api.RestResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -11,11 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
  * @author zhouquan3
  */
 @FeignClient("user")
-public interface UserApi {
+public interface UserApi extends BaseApi{
 
-    String AUTH_HEAD_NAME = "Auth—Token-String";
-
-    String USER_ID_NAME = "userId";
+    @Override
+    default String name() {
+        return "用户服务";
+    }
 
     /**
      * 验证token，通过则返回用户的基本信息
@@ -23,5 +25,8 @@ public interface UserApi {
      * @return 用户基本信息
      */
     @PostMapping("/api/user/validateToken")
-    UserVO validateToken(String token);
+    RestResult<UserVO> validateToken(String token);
+
+    @PostMapping("/api/user/getById")
+    RestResult<UserVO> getById(Long userId);
 }
